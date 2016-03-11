@@ -23,39 +23,51 @@ RADOP_REPLY_TYPES = (
 )
 
 class Realmgroup(models.Model):
+    class Meta:
+        db_table = 'realmgroup'
+
     realmname = models.CharField(max_length=30)
     groupname = models.CharField(max_length=30)
     def __str__(self):
         return str(self.realmname)
-    class Meta:
-        db_table = 'realmgroup'
+
 
 class Realms(models.Model):
+    class Meta:
+        db_table = 'realms'
+        verbose_name_plural = "realms"
+
     realmname = models.CharField(max_length=64)
     nas = models.CharField(max_length=128)
     authport = models.IntegerField()
     options = models.CharField(max_length=128)
     def __str__(self):
         return str(self.realmname)
-    class Meta:
-        db_table = 'realms'
-        verbose_name_plural = "realms"
+
 
 class Attributelist(models.Model):
+    class Meta:
+        db_table = 'attributelist'
+
     attribute = models.CharField(max_length=60)
     enabled = models.BooleanField()
     checkitem = models.BooleanField()
     def __str__(self):
         return str(self.attribute)
-    class Meta:
-        db_table = 'attributelist'
+
 
 class Nas(models.Model):
+    class Meta:
+        db_table = 'nas'
+        verbose_name_plural = "nas"
+
     NAS_TYPES = (
         ('cisco', 'cisco'),
         ('computone', 'computone'),
         ('livingston', 'livingston'),
+        ('juniper', 'juniper'),
         ('max40xx', 'max40xx'),
+        ('mikrotik', 'mikrotik'),
         ('multitech', 'multitech'),
         ('netserver', 'netserver'),
         ('pathras', 'pathras'),
@@ -65,6 +77,7 @@ class Nas(models.Model):
         ('usrhiper', 'usrhiper'),
         ('other', 'other'),
     )
+
     vhost = models.CharField(max_length=128, unique=True, help_text='NAS Name (or IP address)')
     nasname = models.CharField(max_length=128, unique=True, help_text='NAS Name (or IP address)')
     shortname = models.CharField(max_length=32)
@@ -77,11 +90,13 @@ class Nas(models.Model):
     snmp = models.CharField(max_length=10, blank=True, null=True)
     def __str__(self):
         return str(self.nasname)
-    class Meta:
-        db_table = 'nas'
-        verbose_name_plural = "nas"
+
 
 class Radpostauth(models.Model):
+    class Meta:
+        db_table = 'radpostauth'
+        verbose_name_plural = "radpostauth"
+
     username = models.CharField(max_length=64)
     password = models.CharField(db_column='pass', max_length=64) # Field renamed because it was a Python reserved word.
     reply = models.CharField(max_length=32)
@@ -90,11 +105,13 @@ class Radpostauth(models.Model):
     callingstationid = models.CharField(max_length=50)
     def __str__(self):
         return str(self.username)
-    class Meta:
-        db_table = 'radpostauth'
-        verbose_name_plural = "radpostauth"
+
 
 class Radreply(models.Model):
+    class Meta:
+        db_table = 'radreply'
+        verbose_name_plural = "radreply"
+
     username = models.CharField(max_length=30)
     attribute = models.CharField(max_length=30)
     op = models.CharField(max_length=2, choices=RADOP_REPLY_TYPES)
@@ -103,51 +120,61 @@ class Radreply(models.Model):
     custid = models.IntegerField()
     def __str__(self):
         return str(self.username)
-    class Meta:
-        db_table = 'radreply'
-        verbose_name_plural = "radreply"
+
 
 class Radusergroup(models.Model):
+    class Meta:
+        db_table = 'radusergroup'
+
     username = models.CharField(max_length=30)
     groupname = models.CharField(max_length=30)
     calledstationid = models.CharField(max_length=64)
     def __str__(self):
         return str(self.username)
-    class Meta:
-        db_table = 'radusergroup'
+
 
 class Radcheck(models.Model):
+    class Meta:
+        db_table = 'radcheck'
+        verbose_name_plural = "radcheck"
+
     username = models.CharField(max_length=64)
     attribute = models.CharField(max_length=64)
     op = models.CharField(max_length=2, choices=RADOP_CHECK_TYPES)
     value = models.CharField(max_length=253)
     def __str__(self):
         return str(self.username)
-    class Meta:
-        db_table = 'radcheck'
-        verbose_name_plural = "radcheck"
+
 
 class Radgroupcheck(models.Model):
-    groupname = models.CharField(max_length=64)
-    attribute = models.CharField(max_length=64)
-    op = models.CharField(max_length=2, choices=RADOP_CHECK_TYPES)
-    value = models.CharField(max_length=253)
     class Meta:
         db_table = 'radgroupcheck'
         verbose_name_plural = "radgroupcheck"
 
+    groupname = models.CharField(max_length=64)
+    attribute = models.CharField(max_length=64)
+    op = models.CharField(max_length=2, choices=RADOP_CHECK_TYPES)
+    value = models.CharField(max_length=253)
+
+
 class Radgroupreply(models.Model):
+    class Meta:
+        db_table = 'radgroupreply'
+        verbose_name_plural = "radgroupreply"
+
     groupname = models.CharField(max_length=64)
     attribute = models.CharField(max_length=64)
     op = models.CharField(max_length=2, choices=RADOP_REPLY_TYPES)
     value = models.CharField(max_length=253)
     def __str__(self):
         return str(self.groupname)
-    class Meta:
-        db_table = 'radgroupreply'
-        verbose_name_plural = "radgroupreply"
+
 
 class Radippool(models.Model):
+    class Meta:
+        db_table = 'radippool'
+        verbose_name_plural = "radippool"
+
     pool_name = models.CharField(max_length=64,help_text='The IP Pool name')
     framedipaddress = models.IPAddressField(help_text='The users IP address')
     nasipaddress = models.CharField(max_length=16)
@@ -159,11 +186,13 @@ class Radippool(models.Model):
     fixed = models.BooleanField()
     def __str__(self):
         return str(self.framedipaddress)
-    class Meta:
-        db_table = 'radippool'
-        verbose_name_plural = "radippool"
+
 
 class Radacct(models.Model):
+    class Meta:
+        db_table = 'radacct'
+        verbose_name_plural = "radacct"
+
     radacctid = models.AutoField(primary_key=True)
     acctsessionid = models.CharField(max_length=32)
     acctuniqueid = models.CharField(max_length=32)
@@ -191,6 +220,4 @@ class Radacct(models.Model):
     xascendsessionsvrkey = models.CharField(max_length=10, null=True)
     def __str__(self):
         return str(self.acctuniqueid)
-    class Meta:
-        db_table = 'radacct'
-        verbose_name_plural = "radacct"
+
